@@ -2,6 +2,7 @@ import java.util.Scanner;
 import java.util.HashMap;
 import dominio.Socio;
 import persistencia.GestorTexto;
+import persistencia.GestorBinario;
 
 public class Main {
     
@@ -9,7 +10,8 @@ public class Main {
     
     public static void main(String[] args) {
         
-        GestorTexto.cargar(sociosGuardados);
+       // GestorTexto.cargar(sociosGuardados);
+        GestorBinario.cargar(sociosGuardados);
         
         Scanner teclado = new Scanner(System.in);
         int opcion = 0;
@@ -19,7 +21,8 @@ public class Main {
             System.out.println("1. Registrar Socio");
             System.out.println("2. Ver Socios");
             System.out.println("3. Guardar datos (TXT)");
-            System.out.println("4. Salir");
+            System.out.println("4. Guardar datos (BIN)");
+            System.out.println("5. Salir");
             System.out.print("Elige una opción: ");
 
             opcion = teclado.nextInt();
@@ -36,13 +39,16 @@ public class Main {
                     GestorTexto.guardar(sociosGuardados);
                     break;
                 case 4:
+                    GestorBinario.guardar(sociosGuardados);
+                    break;
+                case 5:
                     System.out.println("Cerrando el sistema. ¡Hasta pronto!");
                     break;
                 default:
-                    System.out.println("Error: Elige una opción entre 1 y 4.");
+                    System.out.println("Error: Elige una opción entre 1 y 5.");
             }
             
-        } while (opcion != 4);
+        } while (opcion != 5); // Condición actualizada
     }
     
     public static void registrarSocio() {
