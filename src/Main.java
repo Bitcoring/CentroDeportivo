@@ -1,18 +1,14 @@
 import java.util.Scanner;
 import java.util.HashMap;
 import dominio.Socio;
-import persistencia.GestorTexto;
-import persistencia.GestorBinario;
+import logica.ControladorGimnasio;
 
 public class Main {
     
-    static HashMap<String, Socio> sociosGuardados = new HashMap<>();
-    
     public static void main(String[] args) {
         
-       // GestorTexto.cargar(sociosGuardados);
-        GestorBinario.cargar(sociosGuardados);
-        
+        // Instanciamos el cerebro. La carga binaria ocurre aquí automáticamente.
+        ControladorGimnasio controlador = new ControladorGimnasio();
         Scanner teclado = new Scanner(System.in);
         int opcion = 0;
         
@@ -20,9 +16,8 @@ public class Main {
             System.out.println("\n--- CENTRO DEPORTIVO ---");
             System.out.println("1. Registrar Socio");
             System.out.println("2. Ver Socios");
-            System.out.println("3. Guardar datos (TXT)");
-            System.out.println("4. Guardar datos (BIN)");
-            System.out.println("5. Salir");
+            System.out.println("3. Guardar datos (BIN)");
+            System.out.println("4. Salir");
             System.out.print("Elige una opción: ");
 
             opcion = teclado.nextInt();
@@ -30,55 +25,50 @@ public class Main {
 
             switch (opcion) {
                 case 1:
-                    registrarSocio();
+                    registrarSocio(controlador, teclado);
                     break;
                 case 2:
-                    verSocios();
+                    verSocios(controlador);
                     break;
                 case 3:
-                    GestorTexto.guardar(sociosGuardados);
+                    // La Vista solo da la orden, el controlador ejecuta.
+                    controlador.guardarDatos();
                     break;
                 case 4:
-                    GestorBinario.guardar(sociosGuardados);
-                    break;
-                case 5:
                     System.out.println("Cerrando el sistema. ¡Hasta pronto!");
                     break;
                 default:
-                    System.out.println("Error: Elige una opción entre 1 y 5.");
+                    System.out.println("Error: Elige una opción válida.");
             }
             
-        } while (opcion != 5); // Condición actualizada
+        } while (opcion != 4);
     }
     
-    public static void registrarSocio() {
-        Scanner entrada = new Scanner(System.in);
-        
+    public static void registrarSocio(ControladorGimnasio controlador, Scanner teclado) {
         System.out.println("\n*** REGISTRO DE NUEVO SOCIO ***");
-        
         System.out.print("Introduce el DNI: ");
-        String dni = entrada.nextLine();
+        String dni = teclado.nextLine();
         
         System.out.print("Introduce el Nombre: ");
-        String nombre = entrada.nextLine();
+        String nombre = teclado.nextLine();
         
         System.out.print("Introduce la Edad: ");
-        int edad = entrada.nextInt();
-        entrada.nextLine(); 
+        int edad = teclado.nextInt();
+        teclado.nextLine(); 
         
-        Socio nuevoSocio = new Socio(dni, nombre, edad);
-        sociosGuardados.put(dni, nuevoSocio);
-        
+        // Enviamos datos primitivos. El controlador arma el objeto.
+        controlador.procesarRegistro(dni, nombre, edad);
         System.out.println("¡Éxito! El socio " + nombre + " ha sido registrado.");
     }
     
-    public static void verSocios() {
+    public static void verSocios(ControladorGimnasio controlador) {
         System.out.println("\n*** LISTADO DE SOCIOS ***");
+        HashMap<String, Socio> lista = controlador.obtenerListaSocios();
         
-        if (sociosGuardados.isEmpty()) {
+        if (lista.isEmpty()) {
             System.out.println("No hay ningún socio registrado todavía.");
         } else {
-            for (Socio cliente : sociosGuardados.values()) {
+            for (Socio cliente : lista.values()) {
                 System.out.println("DNI: " + cliente.getDni() + 
                                    " | Nombre: " + cliente.getNombre() + 
                                    " | Edad: " + cliente.getEdad());
