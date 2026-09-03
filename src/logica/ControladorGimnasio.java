@@ -2,7 +2,8 @@ package logica;
 
 import java.util.HashMap;
 import dominio.Socio;
-import persistencia.GestorBinario;
+import persistencia.GestorBD;
+import persistencia.GestorBinario; // Mantenemos esta importación solo por ahora
 
 public class ControladorGimnasio {
 
@@ -10,7 +11,7 @@ public class ControladorGimnasio {
 
     public ControladorGimnasio() {
         this.sociosGuardados = new HashMap<>();
-        // El controlador lee los datos al nacer
+        // Seguimos cargando desde el archivo binario hasta que programemos la lectura SQL
         GestorBinario.cargar(this.sociosGuardados);
     }
 
@@ -23,7 +24,8 @@ public class ControladorGimnasio {
         return sociosGuardados;
     }
 
+    // Único método de guardado, 100% conectado al motor de base de datos
     public void guardarDatos() {
-        GestorBinario.guardar(sociosGuardados);
+        GestorBD.guardar(sociosGuardados);
     }
 }

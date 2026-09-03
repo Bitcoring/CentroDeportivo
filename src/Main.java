@@ -2,12 +2,16 @@ import java.util.Scanner;
 import java.util.HashMap;
 import dominio.Socio;
 import logica.ControladorGimnasio;
+import persistencia.GestorBD; // Importamos el Gestor de Base de Datos
 
 public class Main {
     
     public static void main(String[] args) {
         
-        // Instanciamos el cerebro. La carga binaria ocurre aquí automáticamente.
+        // 1. Garantizamos que la tabla física exista antes de hacer nada
+        GestorBD.crearTabla();
+        
+        // 2. Instanciamos el cerebro (que internamente todavía carga los datos binarios)
         ControladorGimnasio controlador = new ControladorGimnasio();
         Scanner teclado = new Scanner(System.in);
         int opcion = 0;
@@ -16,7 +20,7 @@ public class Main {
             System.out.println("\n--- CENTRO DEPORTIVO ---");
             System.out.println("1. Registrar Socio");
             System.out.println("2. Ver Socios");
-            System.out.println("3. Guardar datos (BIN)");
+            System.out.println("3. Guardar datos (Base de Datos)");
             System.out.println("4. Salir");
             System.out.print("Elige una opción: ");
 
@@ -31,7 +35,7 @@ public class Main {
                     verSocios(controlador);
                     break;
                 case 3:
-                    // La Vista solo da la orden, el controlador ejecuta.
+                    // La vista lanza la orden, el controlador ejecuta la inserción SQL
                     controlador.guardarDatos();
                     break;
                 case 4:
@@ -56,7 +60,6 @@ public class Main {
         int edad = teclado.nextInt();
         teclado.nextLine(); 
         
-        // Enviamos datos primitivos. El controlador arma el objeto.
         controlador.procesarRegistro(dni, nombre, edad);
         System.out.println("¡Éxito! El socio " + nombre + " ha sido registrado.");
     }
