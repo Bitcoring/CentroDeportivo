@@ -12,7 +12,8 @@ public class ControladorGimnasio {
     public ControladorGimnasio() {
         this.sociosGuardados = new HashMap<>();
         // Seguimos cargando desde el archivo binario hasta que programemos la lectura SQL
-        GestorBinario.cargar(this.sociosGuardados);
+       // GestorBinario.cargar(this.sociosGuardados);
+        GestorBD.cargar(this.sociosGuardados);
     }
 
     public void procesarRegistro(String dni, String nombre, int edad) {

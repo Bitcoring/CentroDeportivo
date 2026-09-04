@@ -5,6 +5,7 @@ import dominio.Socio;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.Statement; // Nueva interfaz importada
+import java.sql.ResultSet;
 
 public class GestorBD {
     
@@ -76,6 +77,39 @@ public class GestorBD {
             
         } catch (Exception e) {
             System.out.println("Error al guardar en SQLite: " + e.getMessage());
+        }
+    }
+    public static void cargar(HashMap<String, Socio> mapaSocios) {
+        String sql = "SELECT dni, nombre, edad FROM socios;";
+        
+        try {
+            Connection cable = conectar();
+            Statement orden = cable.createStatement();
+            
+            // Ejecutamos la consulta y atrapamos la tabla resultante
+            ResultSet tablaResultados = orden.executeQuery(sql);
+            
+            // Mientras exista una fila siguiente, el bucle continúa
+            while (tablaResultados.next()) {
+                // Extraemos los datos apuntando al nombre exacto de la columna SQL
+                String dni = tablaResultados.getString("dni");
+                String nombre = tablaResultados.getString("nombre");
+                int edad = tablaResultados.getInt("edad");
+                
+                // Reconstruimos el objeto Java y lo inyectamos al HashMap
+                Socio clienteRecuperado = new Socio(dni, nombre, edad);
+                mapaSocios.put(dni, clienteRecuperado);
+            }
+            
+            // Cerramos los tres recursos en orden inverso a su creación
+            tablaResultados.close();
+            orden.close();
+            cable.close();
+            
+            System.out.println("Base de datos cargada exitosamente en la memoria.");
+            
+        } catch (Exception e) {
+            System.out.println("Error al cargar la base de datos: " + e.getMessage());
         }
     }
 }
